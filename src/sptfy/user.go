@@ -1,16 +1,11 @@
 package sptfy
 
-import (
-	"net/url"
-)
-
-
 type SptfyUser struct {
 	DisplayName string `json:"display_name"`
-	Email string `json:"email"`
+	Email       string `json:"email"`
 	Id          string `json:"id"`
 	Uri         string `json:"uri"`
-	Href        url.URL `json:"href"`
+	Href        string `json:"href"`
 }
 
 type SpotifyAPIUserResponse struct {

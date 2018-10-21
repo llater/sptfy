@@ -5,14 +5,14 @@ import (
 )
 
 type SptfyTrack struct {
-	PlaybackUrl url.URL               `json:"playback_url"`
-	Name        string               `json:"name"`
-	Artists     string `json:"artists"`
-	Album       string    `json:"album"`
-	IsPlayable  bool                  `json:"is_playable"`
-	Id          string               `json:"id"`
-	Uri         string               `json:"uri"`
-	Href        url.URL              `json:"href"`
+	PlaybackUrl url.URL `json:"playback_url"`
+	Name        string  `json:"name"`
+	Artists     string  `json:"artists"`
+	Album       string  `json:"album"`
+	IsPlayable  bool    `json:"is_playable"`
+	Id          string  `json:"id"`
+	Uri         string  `json:"uri"`
+	Href        url.URL `json:"href"`
 }
 
 type SpotifyAPITrackSearchResponse struct {
@@ -22,13 +22,13 @@ type SpotifyAPITrackSearchResponse struct {
 			ExternalUrls struct {
 				Spotify string `json:"spotify"`
 			} `json:"external_urls"`
-			Genres []struct {} `json:"genres"` // need a working example of this
-			Href string `json:"href"`
-			Id string `json:"id"`
+			Genres []struct{} `json:"genres"` // need a working example of this
+			Href   string     `json:"href"`
+			Id     string     `json:"id"`
 			Images []struct {
-				Height int `json:"height"`
-				Url string `json:"url"`
-				Width string `json:"width"`
+				Height int    `json:"height"`
+				Url    string `json:"url"`
+				Width  string `json:"width"`
 			} `json:"images"`
 		} `json:"items"`
 		Limit int `json:"limit"`
@@ -38,4 +38,3 @@ type SpotifyAPITrackSearchResponse struct {
 		Total int `json:"total"`
 	} `json:"tracks"`
 }
-
