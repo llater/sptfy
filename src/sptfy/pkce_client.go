@@ -167,14 +167,14 @@ func (c *SpotifyOAuthPkceClient) Me() (user *SptfyUser, err error) {
 		Href:        m.URLs.SpotifyLink}, nil
 }
 
-func (c *SpotifyOAuthPkceClient) Ping() (ok bool, err error) {
+func (c *SpotifyOAuthPkceClient) Ping() error {
 	r, err := c.HttpClient.Get(SPOTIFY_API_ENDPOINT + "/me")
 	if err != nil {
-		return false, err
+		return err
 	}
 	if r.StatusCode != http.StatusOK {
 		log.Println("Ping to Spotify API failed")
-		return false, fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
+		return fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
 	}
-	return true, nil
+	return nil
 }
