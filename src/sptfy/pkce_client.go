@@ -141,24 +141,39 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 	return &sClient, nil
 }
 
-func (c *SpotifyOAuthPkceClient) Ping() (spotifyId string, err error) {
+func (c *SpotifyOAuthPkceClient) Me() (user *SptfyUser, err error) {
 	r, err := c.HttpClient.Get(SPOTIFY_API_ENDPOINT + "/me")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	log.Println(r.StatusCode)
 	if r.StatusCode != http.StatusOK {
-		log.Println("Ping to Spotify API failed")
-		return "", nil
+		log.Println("Failed to reach Spotify API /me endpoint")
+		return nil, fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
 	}
 	defer r.Body.Close()
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	var m spotifyMeResponse
 	if err := json.Unmarshal(b, &m); err != nil {
-		return "", err
+		return nil, err
 	}
-	return m.Id, nil
+	return &SptfyUser{
+		DisplayName: spotifyMeResponse.Name,
+		Email:       spotifyMeResponse.Email,
+		Id:          spotifyMeResponse.Id,
+		Href:        spotifyMeResponse.URLs.SpotifyLink}, nil
+}
+
+func (c *SpotifyOAuthPkceClient) Ping() (ok bool, err error) {
+	r, err := c.HttpClient.Get(SPOTIFY_API_ENDPOINT + "/me")
+	if err != nil {
+		return false, err
+	}
+	if r.StatusCode != http.StatusOK {
+		log.Println("Ping to Spotify API failed")
+		return false, fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
+	}
+	return true, nil
 }
