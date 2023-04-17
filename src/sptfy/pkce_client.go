@@ -62,7 +62,7 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 	challenge := verifier.CodeChallengeS256()
 
 	// Assign verifier to returned client
-	sClient.PkceVerifier = &verifier
+	sClient.PkceVerifier = verifier
 
 	// Generate state
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
