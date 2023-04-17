@@ -83,7 +83,7 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 				}
 				// TODO Check state
 				authorizationResponses <- reply
-				http.Redirect(w, r, "/", http.StatusSeeOther)
+				http.Redirect(w, r, "http://localhost:10011/", http.StatusSeeOther)
 			}
 		})
 		server := &http.Server{
