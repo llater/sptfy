@@ -2,6 +2,7 @@ package sptfy
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/browser"
 	"io/ioutil"
 	"log"
@@ -160,10 +161,10 @@ func (c *SpotifyOAuthPkceClient) Me() (user *SptfyUser, err error) {
 		return nil, err
 	}
 	return &SptfyUser{
-		DisplayName: spotifyMeResponse.Name,
-		Email:       spotifyMeResponse.Email,
-		Id:          spotifyMeResponse.Id,
-		Href:        spotifyMeResponse.URLs.SpotifyLink}, nil
+		DisplayName: m.Name,
+		Email:       m.Email,
+		Id:          m.Id,
+		Href:        m.URLs.SpotifyLink}, nil
 }
 
 func (c *SpotifyOAuthPkceClient) Ping() (ok bool, err error) {
