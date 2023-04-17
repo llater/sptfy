@@ -55,9 +55,14 @@ type pkceAccessTokenResponse struct {
 */
 
 func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
+	sClient := SpotifyOAuthPkceClient{}
+
 	// Generate code challenge with helper methods
 	verifier, err := verifier()
 	challenge := verifier.CodeChallengeS256()
+
+	// Assign verifier to returned client
+	sClient.PkceVerifier = &verifier
 
 	// Generate state
 	var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -75,6 +80,7 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 					Code:  code,
 					State: state,
 				}
+				// TODO Check state
 				authorizationResponses <- reply
 			}
 		})
@@ -130,7 +136,6 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	sClient := SpotifyOAuthPkceClient{}
 	sClient.HttpClient.Transport = oauthTransport{http.Transport{}, accessToken.AccessToken}
 
 	return &sClient, nil
