@@ -43,18 +43,6 @@ type pkceAccessTokenResponse struct {
 	TokenType    string `json:"token_type"`
 }
 
-/*
-	type spotifyPkceAuthRequest struct {
-		ClientId            string `json:"client_id"`
-		ResponseType        string `json:"response_type"`
-		RedirectUri         string `json:"redirect_uri"`
-		State               string `json:"state"`
-		Scope               string `json:"scope"`
-		CodeChallengeMethod string `default:"S256",json:"code_challenge_method"`
-		CodeChallenge       string `json"code_challenge"`
-	}
-*/
-
 func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 	sClient := SpotifyOAuthPkceClient{}
 
@@ -141,6 +129,27 @@ func NewSpotifyOAuthPkceClient() (*SpotifyOAuthPkceClient, error) {
 	sClient.HttpClient.Transport = oauthTransport{http.Transport{}, accessToken.AccessToken}
 
 	return &sClient, nil
+}
+
+func (c *SpotifyOAuthPkceClient) Search(q string) (results *SpotifyAPITrackSearchResponse, err error) {
+	r, err := c.HttpClient.Get(SPOTIFY_API_ENDPOINT + "/search?type=track&q=" + q)
+	if err != nil {
+		return nil, err
+	}
+	if r.StatusCode != http.StatusOK {
+		log.Println("Failed to reach Spotify API /search endpoint")
+		return nil, fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
+	}
+	defer r.Body.Close()
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return nil, err
+	}
+	var s SpotifyAPITrackSearchResponse
+	if err := json.Unmarshal(b, &s); err != nil {
+		return nil, err
+	}
+	return &s, nil
 }
 
 func (c *SpotifyOAuthPkceClient) Me() (user *SptfyUser, err error) {

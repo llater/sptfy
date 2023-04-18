@@ -9,7 +9,6 @@ type SptfyTrack struct {
 	Name        string  `json:"name"`
 	Artists     string  `json:"artists"`
 	Album       string  `json:"album"`
-	IsPlayable  bool    `json:"is_playable"`
 	Id          string  `json:"id"`
 	Uri         string  `json:"uri"`
 	Href        url.URL `json:"href"`
