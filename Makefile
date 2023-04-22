@@ -9,7 +9,7 @@ BUILD_PATH=build
 BINARY_UNIX=$(BINARY_NAME)_unix
 BUILD_DIR=./bin/main
 
-all: clean build run 
+all: clean build run
 build:
 	$(GOBUILD) -o $(BUILD_PATH)/$(BINARY_NAME) -v $(BUILD_DIR)
 #test:
