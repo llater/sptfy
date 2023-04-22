@@ -5,13 +5,13 @@ import (
 )
 
 type SptfyTrack struct {
-	PlaybackUrl url.URL `json:"playback_url"`
-	Name        string  `json:"name"`
-	Artists     string  `json:"artists"`
-	Album       string  `json:"album"`
-	Id          string  `json:"id"`
-	Uri         string  `json:"uri"`
-	Href        url.URL `json:"href"`
+	PlaybackUrl url.URL  `json:"playback_url"`
+	Name        string   `json:"name"`
+	Artists     []string `json:"artists"`
+	Album       string   `json:"album"`
+	Id          string   `json:"id"`
+	Uri         string   `json:"uri"`
+	Href        url.URL  `json:"href"`
 }
 
 type SpotifyAPITrackSearchResponse struct {

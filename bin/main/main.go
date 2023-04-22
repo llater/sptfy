@@ -2,7 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/llater/sptfy/pkg/clients"
+	"github.com/llater/sptfy/pkg/models"
+	"github.com/llater/sptfy/pkg/utils"
+	"github.com/manifoldco/promptui"
 	"log"
 	"os"
 )
@@ -20,6 +24,7 @@ func crash(e error) {
 
 func main() {
 
+	// TODO Change this to read from filepath
 	clientId, ok := os.LookupEnv(CLIENT_ID_ENVVAR_NAME)
 	if !ok {
 		panic(errors.New("Spotify client ID not found"))
@@ -41,12 +46,50 @@ func main() {
 	}
 
 	switch command {
-	case "me":
-		me, err := client.Me()
-		crash(err)
-		log.Printf("Name: %s\nEmail: %s\nSpotifyID: %s", me.DisplayName, me.Email, me.Id)
+	/*
+			// Not available to the client credentials flow -- no logged in user
+		        case "me":
+				me, err := client.Me()
+				crash(err)
+				fmt.Printf("Name: %s\nEmail: %s\nSpotifyID: %s", me.DisplayName, me.Email, me.Id)
+	*/
+
 	case "search":
-		log.Print("work on promptui")
+		var (
+			query    string
+			response *utils.SpotifySearchResponse
+		)
+		if len(os.Args) < 3 {
+			queryPrompt := promptui.Prompt{
+				Label: "Search",
+			}
+			query, err = queryPrompt.Run()
+			crash(err)
+		} else {
+			// Use the next argument as the search query
+			query = os.Args[2]
+		}
+		response, err = client.Search(query)
+		crash(err)
+
+		tracks := response.Tracks.Items
+		outputTracks := []*models.SptfyTrack{}
+
+		for i := 0; i < len(tracks); i++ {
+			artists := []string{}
+			for j := 0; j < len(tracks[i].Artists); j++ {
+				artists = append(artists, tracks[i].Artists[j].Name)
+			}
+
+			outputTracks = append(outputTracks, &models.SptfyTrack{
+				Name:    tracks[i].Name,
+				Id:      tracks[i].Id,
+				Artists: artists,
+			})
+		}
+		for t := 0; t < 5; t++ {
+			fmt.Printf("%s - %s", outputTracks[t].Name, outputTracks[t].Album)
+		}
 	default:
 		log.Fatal("argument not defined")
 	}

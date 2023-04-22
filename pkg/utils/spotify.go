@@ -43,13 +43,14 @@ type SpotifySearchResponse struct {
 		Message string `json:"message"`
 	} `json:"error,omitempty"`
 	Tracks struct {
-		Items struct {
+		Items []struct {
 			Name    string `json:"name"`
 			Id      string `json:"id"`
 			Artists []struct {
 				Name string `json:"name"`
 				Id   string `json:"id"`
-			}
+			} `json:"artists"`
+			Album string `json:"album"`
 		} `json:"items"`
 	} `json:"tracks"`
 	Artists struct {
