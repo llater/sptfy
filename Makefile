@@ -7,9 +7,9 @@ GOGET=$(GOCMD) get
 BINARY_NAME=sptfy
 BUILD_PATH=build
 BINARY_UNIX=$(BINARY_NAME)_unix
-BUILD_DIR=./cmd/sptfy/
+BUILD_DIR=./bin/main
 
-all: build
+all: clean build run 
 build:
 	$(GOBUILD) -o $(BUILD_PATH)/$(BINARY_NAME) -v $(BUILD_DIR)
 #test:
