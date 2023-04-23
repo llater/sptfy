@@ -8,6 +8,7 @@ import (
 	"github.com/llater/sptfy/pkg/utils"
 	"github.com/manifoldco/promptui"
 	"log"
+	"net/url"
 	"os"
 )
 
@@ -69,6 +70,7 @@ func main() {
 			// Use the next argument as the search query
 			query = os.Args[2]
 		}
+		query = url.QueryEscape(query)
 		response, err = client.Search(query)
 		crash(err)
 
@@ -88,7 +90,7 @@ func main() {
 			})
 		}
 		for t := 0; t < 5; t++ {
-			fmt.Printf("%s - %s", outputTracks[t].Name, outputTracks[t].Album)
+			fmt.Printf("%s - %s\n", outputTracks[t].Name, outputTracks[t].Album)
 		}
 	default:
 		log.Fatal("argument not defined")

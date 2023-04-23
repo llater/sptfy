@@ -88,7 +88,6 @@ func (c *SpotifyClientCredentialsClient) Search(q string) (results *utils.Spotif
 	}
 	if r.StatusCode != http.StatusOK {
 		log.Println("Failed to reach Spotify API /search endpoint")
-		return nil, fmt.Errorf("Failed to reach Spotify API /me endpoint with status code %d", r.StatusCode)
 	}
 	defer r.Body.Close()
 	b, err := ioutil.ReadAll(r.Body)
@@ -99,5 +98,6 @@ func (c *SpotifyClientCredentialsClient) Search(q string) (results *utils.Spotif
 	if err := json.Unmarshal(b, &s); err != nil {
 		return nil, err
 	}
+	log.Println(s.Tracks.Items[0].Name)
 	return &s, nil
 }

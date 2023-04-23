@@ -18,4 +18,4 @@ clean:
 	$(GOCLEAN)
 	rm -rf $(BUILD_PATH)
 run:
-	./$(BUILD_PATH)/$(BINARY_NAME)
+	./$(BUILD_PATH)/$(BINARY_NAME) search "DFA 1979"
