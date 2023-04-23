@@ -18,7 +18,7 @@ type SpotifyClientCredentialsClient struct {
 	http.Client
 }
 
-func NewSpotifyClientCredentialsClient(clientId, clientSecret string) (*SpotifyClientCredentialsClient, error) {
+func NewSpotifyClientCredentialsClient(clientId, clientSecret []byte) (*SpotifyClientCredentialsClient, error) {
 	credentialsClient := &SpotifyClientCredentialsClient{}
 
 	data := url.Values{}
@@ -29,8 +29,7 @@ func NewSpotifyClientCredentialsClient(clientId, clientSecret string) (*SpotifyC
 		return nil, err
 	}
 
-	b := []byte{}
-	creds := fmt.Appendf(b, "%s:%s", clientId, clientSecret)
+	creds := fmt.Appendf(clientId, ":%s", clientSecret)
 	encodedCredentials := base64.StdEncoding.EncodeToString(creds)
 
 	req.Header.Add("Authorization", "Basic "+encodedCredentials)
@@ -53,32 +52,6 @@ func NewSpotifyClientCredentialsClient(clientId, clientSecret string) (*SpotifyC
 	credentialsClient.Transport = utils.AccessTokenTransport{http.Transport{}, token.AccessToken}
 
 	return credentialsClient, nil
-
-}
-
-func (c *SpotifyClientCredentialsClient) Me() (*models.SptfyUser, error) {
-	r, err := c.Get(SPOTIFY_API_ENDPOINT + "/me")
-	if err != nil {
-		return nil, err
-	}
-	defer r.Body.Close()
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-	var m utils.SpotifyMeResponse
-	if err = json.Unmarshal(b, &m); err != nil {
-		return nil, err
-	}
-	if r.StatusCode != http.StatusOK {
-		log.Printf("Observed status code: %d\nAPI status code: %d\nMessage: %s", r.StatusCode, m.Error.Status, m.Error.Message)
-		return nil, errors.New("/me endpoint did not return 200")
-	}
-	return &models.SptfyUser{
-		DisplayName: m.Name,
-		Email:       m.Email,
-		Id:          m.Id,
-		Href:        m.URLs.SpotifyLink}, nil
 }
 
 func (c *SpotifyClientCredentialsClient) Search(q string) (results *utils.SpotifySearchResponse, err error) {
