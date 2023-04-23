@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"flag"
 	"fmt"
 	"github.com/llater/sptfy/pkg/clients"
 	"github.com/llater/sptfy/pkg/models"
@@ -12,9 +12,11 @@ import (
 	"os"
 )
 
-const (
-	CLIENT_ID_ENVVAR_NAME     = "SPOTIFY_CLIENT_ID"
-	CLIENT_SECRET_ENVVAR_NAME = "SPOTIFY_CLIENT_SECRET"
+var (
+	spotifyClientId         string
+	spotifyClientIdPath     string
+	spotifyClientSecret     string
+	spotifyClientSecretPath string
 )
 
 func crash(e error) {
@@ -25,19 +27,23 @@ func crash(e error) {
 
 func main() {
 
-	// TODO Change this to read from filepath
-	// TODO Select type of client: logged-in or query
-	clientId, ok := os.LookupEnv(CLIENT_ID_ENVVAR_NAME)
-	if !ok {
-		panic(errors.New("Spotify client ID not found"))
-	}
+	homedir, err := os.UserHomeDir()
+	crash(err)
 
-	clientSecret, ok := os.LookupEnv(CLIENT_SECRET_ENVVAR_NAME)
-	if !ok {
-		panic(errors.New("Spotify client secret not found"))
-	}
+	// Filepath defaults to the home directory ~/.cue
+	// These secrets can only be read in from a filepath.
+	flag.StringVar(&spotifyClientIdPath, "spotify-client-id-path", fmt.Sprintf("%s%s", homedir, "/.sptfy/spotify-client-id"), "Spotify API client ID")
+	flag.StringVar(&spotifyClientSecretPath, "spotify-client-secret", fmt.Sprintf("%s%s", homedir, "/.sptfy/spotify-client-secret"), "Spotify API client secret")
+	flag.Parse()
 
-	client, err := clients.NewSpotifyClientCredentialsClient(clientId, clientSecret)
+	// Read in the flags from the provided filepath
+	spotifyClientId, err := os.ReadFile(spotifyClientIdPath)
+	crash(err)
+
+	spotifyClientSecret, err := os.ReadFile(spotifyClientSecretPath)
+	crash(err)
+
+	client, err := clients.NewSpotifyClientCredentialsClient(spotifyClientId, spotifyClientSecret)
 	crash(err)
 
 	var command string
@@ -83,7 +89,7 @@ func main() {
 				Album:   tracks[i].Album.Name,
 			})
 		}
-		for t := 0; len(outputTracks); t++ {
+		for t := 0; t < len(outputTracks); t++ {
 			fmt.Printf("%s - %s - %s\n", outputTracks[t].Name, outputTracks[t].Artists, outputTracks[t].Album)
 		}
 		// TODO add support for pagination

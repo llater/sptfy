@@ -3,7 +3,6 @@ package clients
 import (
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/llater/sptfy/pkg/models"
 	"github.com/llater/sptfy/pkg/utils"
@@ -73,4 +72,8 @@ func (c *SpotifyClientCredentialsClient) Search(q string) (results *utils.Spotif
 	}
 	log.Println(s.Tracks.Items[0].Name)
 	return &s, nil
+}
+
+func (c *SpotifyClientCredentialsClient) GetUserById(spotifyId string) (*models.SptfyUser, error) {
+	return &models.SptfyUser{}, nil
 }
