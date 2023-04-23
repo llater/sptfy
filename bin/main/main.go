@@ -26,6 +26,7 @@ func crash(e error) {
 func main() {
 
 	// TODO Change this to read from filepath
+	// TODO Select type of client: logged-in or query
 	clientId, ok := os.LookupEnv(CLIENT_ID_ENVVAR_NAME)
 	if !ok {
 		panic(errors.New("Spotify client ID not found"))
@@ -41,20 +42,12 @@ func main() {
 
 	var command string
 	if len(os.Args) < 2 {
-		log.Fatal("Must supply an argument. --help for help")
+		log.Fatal("Display")
 	} else {
 		command = os.Args[1] // Call only the first argument
 	}
 
 	switch command {
-	/*
-			// Not available to the client credentials flow -- no logged in user
-		        case "me":
-				me, err := client.Me()
-				crash(err)
-				fmt.Printf("Name: %s\nEmail: %s\nSpotifyID: %s", me.DisplayName, me.Email, me.Id)
-	*/
-
 	case "search":
 		var (
 			query    string
@@ -87,11 +80,13 @@ func main() {
 				Name:    tracks[i].Name,
 				Id:      tracks[i].Id,
 				Artists: artists,
+				Album:   tracks[i].Album.Name,
 			})
 		}
-		for t := 0; t < 5; t++ {
-			fmt.Printf("%s - %s\n", outputTracks[t].Name, outputTracks[t].Album)
+		for t := 0; len(outputTracks); t++ {
+			fmt.Printf("%s - %s - %s\n", outputTracks[t].Name, outputTracks[t].Artists, outputTracks[t].Album)
 		}
+		// TODO add support for pagination
 	default:
 		log.Fatal("argument not defined")
 	}
